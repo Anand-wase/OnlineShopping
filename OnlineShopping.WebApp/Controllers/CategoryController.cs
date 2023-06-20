@@ -42,8 +42,10 @@ namespace OnlineShopping.WebApp.Controllers
             var response = await _categoryService.CreateAsync<APIResponse>(model);
             if (response != null && response.IsSuccess)
             {
+                TempData["success"] = "Category created successfully";
                 return RedirectToAction(nameof(IndexCategory));
             }
+            TempData["error"] = "Error encountered.";
             return View(model);
         }
         public async Task<IActionResult> UpdateCategory(int categoryId)
@@ -64,9 +66,11 @@ namespace OnlineShopping.WebApp.Controllers
             var response = await _categoryService.UpdateAsync<APIResponse>(model);
             if (response != null && response.IsSuccess)
             {
+                TempData["success"] = "Category updated successfully";
 
                 return RedirectToAction(nameof(IndexCategory));
             }
+            TempData["error"] = "Error encountered.";
             return View(model);
         }
         public async Task<IActionResult> DeleteCategory(int categoryId)
@@ -97,11 +101,10 @@ namespace OnlineShopping.WebApp.Controllers
 
             {
 
-
+                TempData["success"] = "Category deleted successfully";
                 return RedirectToAction(nameof(IndexCategory));
-
             }
-
+            TempData["error"] = "Error encountered.";
             return View(model);
 
         }

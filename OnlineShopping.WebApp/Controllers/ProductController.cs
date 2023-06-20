@@ -39,7 +39,7 @@ namespace OnlineShopping.WebApp.Controllers
             var response = await _categoryService.GetAllAsync<APIResponse>();
             if (response != null && response.IsSuccess)
             {
-                productVM.CategoryList = JsonConvert.DeserializeObject<List<CategoryDto>>
+                    productVM.CategoryList = JsonConvert.DeserializeObject<List<CategoryDto>>
                     (Convert.ToString(response.Result)).Select(i => new SelectListItem
                     {
                         Text = i.CategoryName,
@@ -57,6 +57,7 @@ namespace OnlineShopping.WebApp.Controllers
             var response = await _productService.CreateAsync<APIResponse>(model.Product);
             if (response != null && response.IsSuccess)
             {
+                TempData["success"] = "Product created successfully";
                 return RedirectToAction(nameof(IndexProduct));
             }
             else
@@ -76,6 +77,7 @@ namespace OnlineShopping.WebApp.Controllers
                         Value = i.CategoryId.ToString()
                     }); ;
             }
+            TempData["error"] = "Error encountered.";
             return View(model);
         }
         public async Task<IActionResult> UpdateProduct(int productId)
@@ -109,6 +111,7 @@ namespace OnlineShopping.WebApp.Controllers
                 var response = await _productService.UpdateAsync<APIResponse>(model.Product);
                 if (response != null && response.IsSuccess)
                 {
+                    TempData["success"] = "Product updated successfully";
                     return RedirectToAction(nameof(IndexProduct));
                 }
                 else if(response.ErrorMessages!=null)
@@ -129,6 +132,7 @@ namespace OnlineShopping.WebApp.Controllers
                         Value = i.CategoryId.ToString()
                     }); ;
             }
+            TempData["error"] = "Error encountered.";
             return View(model);
         }
         public async Task<IActionResult> DeleteProduct(int productId)
@@ -162,8 +166,10 @@ namespace OnlineShopping.WebApp.Controllers
             var response = await _productService.DeleteAsync<APIResponse>(model.Product.ProductId);
             if (response != null && response.IsSuccess)
             {
+                TempData["success"] = "Product delete successfully";
                 return RedirectToAction(nameof(IndexProduct));
             }
+            TempData["error"] = "Error encountered.";
             return View(model);
         }
     }
