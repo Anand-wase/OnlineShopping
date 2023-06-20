@@ -27,6 +27,6 @@ public class Product
 
     [StringLength(100)]
     [Unicode(false)]
-    public string ImageUrl { get; set; }
+    public string? ImageUrl { get; set; }
     public virtual Category Category { get; set; }
 }

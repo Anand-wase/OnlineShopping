@@ -156,6 +156,11 @@ namespace OnlineShopping.WebApi.Controllers
         {
             try
             {
+                if (await _dbProduct.GetAsync(u => u.ProductName.ToLower() == updateDto.ProductName.ToLower()) != null)
+                {
+                    ModelState.AddModelError("CustomError", "Product already Exists!");
+                    return BadRequest(ModelState);
+                }
                 if (await _dbCategory.GetAsync(u => u.CategoryId == updateDto.CategoryId) == null)
                 {
                     ModelState.AddModelError("CustomError", "Category ID is Invalid!");

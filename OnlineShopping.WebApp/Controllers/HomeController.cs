@@ -1,32 +1,32 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using OnlineShopping.WebApp.Models;
+using OnlineShopping.WebApp.Services.IServices;
 using System.Diagnostics;
 
 namespace OnlineShopping.WebApp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IProductService _productService;
+        private readonly IMapper _mapper;
+        public HomeController(IProductService productService, IMapper mapper)
         {
-            _logger = logger;
+            _productService = productService;
+            _mapper = mapper;
         }
 
-        public IActionResult Index()
-        { 
-            return View();
-        }
-
-        public IActionResult Privacy()
+        public async Task<IActionResult> Index()
         {
-            return View();
-        }
+            List<ProductDto> list = new();
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var response = await _productService.GetAllAsync<APIResponse>();
+            if (response != null && response.IsSuccess)
+            {
+                list = JsonConvert.DeserializeObject<List<ProductDto>>(Convert.ToString(response.Result));
+            }
+            return View(list);
         }
     }
 }

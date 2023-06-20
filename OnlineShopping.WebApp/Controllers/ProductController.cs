@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using OnlineShopping.WebApp.Models;
+using OnlineShopping.WebApp.Models.VM;
+using OnlineShopping.WebApp.Services;
 using OnlineShopping.WebApp.Services.IServices;
+using System.Collections.Generic;
 
 namespace OnlineShopping.WebApp.Controllers
 {
@@ -10,8 +14,10 @@ namespace OnlineShopping.WebApp.Controllers
     {
         private readonly IProductService _productService;
         private readonly IMapper _mapper;
-        public ProductController(IProductService productService, IMapper mapper)
+        private readonly ICategoryService _categoryService;
+        public ProductController(IProductService productService, IMapper mapper, ICategoryService categoryService)
         {
+            _categoryService = categoryService;
             _productService = productService;
             _mapper = mapper;
         }
@@ -27,5 +33,91 @@ namespace OnlineShopping.WebApp.Controllers
             }
             return View(list);
         }
-    }
+        public async Task<IActionResult> CreateProduct()
+        {
+            ProductCreateVM productVM = new();
+            var response = await _categoryService.GetAllAsync<APIResponse>();
+            if (response != null && response.IsSuccess)
+            {
+                productVM.CategoryList = JsonConvert.DeserializeObject<List<CategoryDto>>
+                    (Convert.ToString(response.Result)).Select(i => new SelectListItem
+                {
+                    Text = i.CategoryName,
+                    Value = i.CategoryId.ToString()
+                });;
+            }
+            return View(productVM);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateProduct(ProductCreateVM model)
+        {
+            List<CategoryDto> list = new();
+
+            var response = await _productService.CreateAsync<APIResponse>(model.Product);
+            if (response != null && response.IsSuccess)
+            {
+                return RedirectToAction(nameof(IndexProduct));
+            }
+            return View(model);
+            }
+            //public async Task<IActionResult> UpdateCategory(int categoryId)
+            //{
+            //    var response = await _categoryService.GetAsync<APIResponse>(categoryId);
+            //    if (response != null && response.IsSuccess)
+            //    {
+            //        CategoryDto model = JsonConvert.DeserializeObject<CategoryDto>(Convert.ToString((response.Result)));
+            //        return View(_mapper.Map<CategoryDto>(model));
+            //    }
+            //    return View();
+            //}
+
+            //[HttpPost]
+            //[ValidateAntiForgeryToken]
+            //public async Task<IActionResult> UpdateCategory(CategoryDto model)
+            //{
+            //    var response = await _categoryService.UpdateAsync<APIResponse>(model);
+            //    if (response != null && response.IsSuccess)
+            //    {
+
+            //        return RedirectToAction(nameof(IndexCategory));
+            //    }
+            //    return View(model);
+            //}
+            //public async Task<IActionResult> DeleteCategory(int categoryId)
+
+            //{
+            //    var response = await _categoryService.GetAsync<APIResponse>(categoryId);
+
+            //    if (response != null && response.IsSuccess)
+
+            //    {
+            //        CategoryDto model = JsonConvert.DeserializeObject<CategoryDto>(Convert.ToString((response.Result)));
+
+            //        return View(model);
+
+            //    }
+            //    return NotFound();
+
+            //}
+            //[HttpPost]
+            //[ValidateAntiForgeryToken]
+            //public async Task<IActionResult> DeleteCategory(CategoryDto model)
+            //{
+
+            //    var response = await _categoryService.DeleteAsync<APIResponse>(model.CategoryId);
+
+            //    if (response != null && response.IsSuccess)
+
+            //    {
+
+
+            //        return RedirectToAction(nameof(IndexCategory));
+
+            //    }
+
+            //    return View(model);
+
+            //}
+        }
 }
