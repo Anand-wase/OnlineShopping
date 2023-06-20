@@ -41,10 +41,10 @@ namespace OnlineShopping.WebApp.Controllers
             {
                 productVM.CategoryList = JsonConvert.DeserializeObject<List<CategoryDto>>
                     (Convert.ToString(response.Result)).Select(i => new SelectListItem
-                {
-                    Text = i.CategoryName,
-                    Value = i.CategoryId.ToString()
-                });;
+                    {
+                        Text = i.CategoryName,
+                        Value = i.CategoryId.ToString()
+                    }); ;
             }
             return View(productVM);
         }
@@ -52,72 +52,119 @@ namespace OnlineShopping.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateProduct(ProductCreateVM model)
         {
-            List<CategoryDto> list = new();
+
 
             var response = await _productService.CreateAsync<APIResponse>(model.Product);
             if (response != null && response.IsSuccess)
             {
                 return RedirectToAction(nameof(IndexProduct));
             }
-            return View(model);
+            else
+            {
+                if (response.ErrorMessages.Count > 0)
+                {
+                    ModelState.AddModelError("ErrorMessages", response.ErrorMessages.FirstOrDefault());
+                }
             }
-            //public async Task<IActionResult> UpdateCategory(int categoryId)
-            //{
-            //    var response = await _categoryService.GetAsync<APIResponse>(categoryId);
-            //    if (response != null && response.IsSuccess)
-            //    {
-            //        CategoryDto model = JsonConvert.DeserializeObject<CategoryDto>(Convert.ToString((response.Result)));
-            //        return View(_mapper.Map<CategoryDto>(model));
-            //    }
-            //    return View();
-            //}
-
-            //[HttpPost]
-            //[ValidateAntiForgeryToken]
-            //public async Task<IActionResult> UpdateCategory(CategoryDto model)
-            //{
-            //    var response = await _categoryService.UpdateAsync<APIResponse>(model);
-            //    if (response != null && response.IsSuccess)
-            //    {
-
-            //        return RedirectToAction(nameof(IndexCategory));
-            //    }
-            //    return View(model);
-            //}
-            //public async Task<IActionResult> DeleteCategory(int categoryId)
-
-            //{
-            //    var response = await _categoryService.GetAsync<APIResponse>(categoryId);
-
-            //    if (response != null && response.IsSuccess)
-
-            //    {
-            //        CategoryDto model = JsonConvert.DeserializeObject<CategoryDto>(Convert.ToString((response.Result)));
-
-            //        return View(model);
-
-            //    }
-            //    return NotFound();
-
-            //}
-            //[HttpPost]
-            //[ValidateAntiForgeryToken]
-            //public async Task<IActionResult> DeleteCategory(CategoryDto model)
-            //{
-
-            //    var response = await _categoryService.DeleteAsync<APIResponse>(model.CategoryId);
-
-            //    if (response != null && response.IsSuccess)
-
-            //    {
-
-
-            //        return RedirectToAction(nameof(IndexCategory));
-
-            //    }
-
-            //    return View(model);
-
-            //}
+            var resp = await _categoryService.GetAllAsync<APIResponse>();
+            if (resp != null && resp.IsSuccess)
+            {
+                model.CategoryList = JsonConvert.DeserializeObject<List<CategoryDto>>
+                    (Convert.ToString(resp.Result)).Select(i => new SelectListItem
+                    {
+                        Text = i.CategoryName,
+                        Value = i.CategoryId.ToString()
+                    }); ;
+            }
+            return View(model);
         }
+        public async Task<IActionResult> UpdateProduct(int productId)
+        {
+            ProductUpdateVM productVM = new();
+            var response = await _productService.GetAsync<APIResponse>(productId);
+            if (response != null && response.IsSuccess)
+            {
+                ProductDto model = JsonConvert.DeserializeObject<ProductDto>(Convert.ToString((response.Result)));
+                productVM.Product = _mapper.Map<UpdateProductDto>(model);
+            }
+            response = await _categoryService.GetAllAsync<APIResponse>();
+            if (response != null && response.IsSuccess)
+            {
+                productVM.CategoryList = JsonConvert.DeserializeObject<List<CategoryDto>>
+                    (Convert.ToString(response.Result)).Select(i => new SelectListItem
+                    {
+                        Text = i.CategoryName,
+                        Value = i.CategoryId.ToString()
+                    }); ;
+                return View(productVM);
+            }
+            return NotFound();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProduct(ProductUpdateVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var response = await _productService.UpdateAsync<APIResponse>(model.Product);
+                if (response != null && response.IsSuccess)
+                {
+                    return RedirectToAction(nameof(IndexProduct));
+                }
+                else if(response.ErrorMessages!=null)
+                {
+                    if (response.ErrorMessages.Count > 0)
+                    {
+                        ModelState.AddModelError("ErrorMessages", response.ErrorMessages.FirstOrDefault());
+                    }
+                }
+            }
+            var resp = await _categoryService.GetAllAsync<APIResponse>();
+            if (resp != null && resp.IsSuccess)
+            {
+                model.CategoryList = JsonConvert.DeserializeObject<List<CategoryDto>>
+                    (Convert.ToString(resp.Result)).Select(i => new SelectListItem
+                    {
+                        Text = i.CategoryName,
+                        Value = i.CategoryId.ToString()
+                    }); ;
+            }
+            return View(model);
+        }
+        public async Task<IActionResult> DeleteProduct(int productId)
+
+        {
+            ProductDeleteVM productVM = new();
+            var response = await _productService.GetAsync<APIResponse>(productId);
+            if (response != null && response.IsSuccess)
+            {
+                ProductDto model = JsonConvert.DeserializeObject<ProductDto>(Convert.ToString((response.Result)));
+                productVM.Product = model;
+            }
+            response = await _categoryService.GetAllAsync<APIResponse>();
+            if (response != null && response.IsSuccess)
+            {
+                productVM.CategoryList = JsonConvert.DeserializeObject<List<CategoryDto>>
+                    (Convert.ToString(response.Result)).Select(i => new SelectListItem
+                    {
+                        Text = i.CategoryName,
+                        Value = i.CategoryId.ToString()
+                    }); ;
+                return View(productVM);
+            }
+            return NotFound();
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteProduct(ProductDeleteVM model)
+        {
+            var response = await _productService.DeleteAsync<APIResponse>(model.Product.ProductId);
+            if (response != null && response.IsSuccess)
+            {
+                return RedirectToAction(nameof(IndexProduct));
+            }
+            return View(model);
+        }
+    }
 }

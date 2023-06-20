@@ -90,12 +90,12 @@ namespace OnlineShopping.WebApi.Controllers
             {
                 if (await _dbProduct.GetAsync(u => u.ProductName.ToLower() == createDto.ProductName.ToLower()) != null)
                 {
-                    ModelState.AddModelError("CustomError", "Product already Exists!");
+                    ModelState.AddModelError("ErrorMessage", "Product already Exists!");
                     return BadRequest(ModelState);
                 }
                 if (await _dbCategory.GetAsync(u => u.CategoryId == createDto.CategoryId) == null)
                 {
-                    ModelState.AddModelError("CustomError", "Category ID is Invalid!");
+                    ModelState.AddModelError("ErrorMessage", "Category ID is Invalid!");
                     return BadRequest(ModelState);
                 }
                 if (createDto == null)
@@ -156,14 +156,14 @@ namespace OnlineShopping.WebApi.Controllers
         {
             try
             {
-                if (await _dbProduct.GetAsync(u => u.ProductName.ToLower() == updateDto.ProductName.ToLower()) != null)
+                if (await _dbProduct.GetAsync(u => u.ProductName.ToLower() == updateDto.ProductName.ToLower() & u.ProductId!=updateDto.ProductId) != null)
                 {
-                    ModelState.AddModelError("CustomError", "Product already Exists!");
+                    ModelState.AddModelError("ErrorMessage", "Product already Exists!");
                     return BadRequest(ModelState);
                 }
                 if (await _dbCategory.GetAsync(u => u.CategoryId == updateDto.CategoryId) == null)
                 {
-                    ModelState.AddModelError("CustomError", "Category ID is Invalid!");
+                    ModelState.AddModelError("ErrorMessage", "Category ID is Invalid!");
                     return BadRequest(ModelState);
                 }
                 if (updateDto == null || id != updateDto.ProductId)

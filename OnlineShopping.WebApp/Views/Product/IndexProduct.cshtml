@@ -13,25 +13,28 @@
 <table class="table"> 
 <thead> 
 <tr> 
-<th> 
-Category Name 
-</th> 
-<th> 
-Product Number 
-</th> 
 
-<th></th> 
+				<th>Product Name</th>
+				<th>Category Name</th>
+				<th>Price</th>
+				<th>Number in Stock</th>
+				<th></th>
+
 </tr> 
 </thead> 
 <tbody> 
 @foreach (var item in Model) 
 { 
 <tr> 
+<td>@item.ProductName</td> 
+
 <td>@item.Category.CategoryName</td> 
-<td>@item.ProductId</td> 
+<td>@item.Price</td> 
+<td>@item.AvailableQuantity</td> 
+
 <td> 
-<a asp-controller="Category" asp-action="UpdateProduct" asp-route-categoryId="@item.ProductId" class="btn btn-success"><i class="bi bi-pencil-square"></i></a> 
-<a asp-controller="Category" asp-action="DeleteProduct" asp-route-categoryId="@item.ProductId" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a> 
+<a asp-controller="Product" asp-action="UpdateProduct" asp-route-ProductId="@item.ProductId" class="btn btn-success"><i class="bi bi-pencil-square"></i></a> 
+<a asp-controller="Product" asp-action="DeleteProduct" asp-route-ProductId="@item.ProductId" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a> 
 </td> 
 </tr> 
 } 

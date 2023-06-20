@@ -88,7 +88,7 @@ namespace OnlineShopping.WebApi.Controllers
             {
                 if (await _dbCategory.GetAsync(u => u.CategoryName.ToLower() == createDto.CategoryName.ToLower()) != null)
                 {
-                    ModelState.AddModelError("CustomError", "Category already Exists!");
+                    ModelState.AddModelError("ErrorMessage", "Category already Exists!");
                     return BadRequest(ModelState);
                 }
                 if (createDto == null)

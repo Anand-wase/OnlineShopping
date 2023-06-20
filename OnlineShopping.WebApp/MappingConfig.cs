@@ -8,7 +8,7 @@ namespace OnlineShopping.WebApp
     {
         public MappingConfig()
         {
-            CreateMap<ProductDto, ProductDto>().ReverseMap();
+            CreateMap<ProductDto, UpdateProductDto>().ReverseMap();
             CreateMap<ProductDto, CreateProductDto>().ReverseMap();
         }
     }

@@ -17,14 +17,13 @@ public class ProductDto
     [Required]
     public double Price { get; set; }
     [StringLength(300)]
-    [Required]
-    public string ProductDescription { get; set; } = null!;
+    public string? ProductDescription { get; set; } = null!;
     [Required]
     public int AvailableQuantity { get; set; }
     [Required]
     public int CategoryId { get; set; }
 
     [StringLength(100)]
-    public string ImageUrl { get; set; }
+    public string? ImageUrl { get; set; }
     public CategoryDto Category { get; set; }
 }

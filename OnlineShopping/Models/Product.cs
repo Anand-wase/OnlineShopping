@@ -17,8 +17,7 @@ public class Product
     [Required]
     public double Price { get; set; }
     [StringLength(300)]
-    [Required]
-    public string ProductDescription { get; set; } = null!;
+    public string? ProductDescription { get; set; } = null!;
     [Required]
     public int AvailableQuantity { get; set; }
     [Required]
@@ -26,7 +25,6 @@ public class Product
     public int CategoryId { get; set; }
 
     [StringLength(100)]
-    [Unicode(false)]
     public string? ImageUrl { get; set; }
     public virtual Category Category { get; set; }
 }

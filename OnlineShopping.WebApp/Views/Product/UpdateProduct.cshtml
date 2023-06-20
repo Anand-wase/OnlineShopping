@@ -1,11 +1,11 @@
-﻿@model OnlineShopping.WebApp.Models.VM.ProductCreateVM
-<form asp-action="CreateProduct">
+﻿@model OnlineShopping.WebApp.Models.VM.ProductUpdateVM
+<form asp-action="UpdateProduct">
 <br />
 <div class="container border p-3">
-<h4 class="text-primary">Create Product</h4>
+<h4 class="text-primary">Update Product</h4>
 <hr />
 
- 
+ <input hidden asp-for="Product.ProductId" />
 
         <div class="row">
 <div asp-validation-summary="All" class="text-danger"></div>
@@ -74,7 +74,7 @@
 <a asp-action="IndexProduct" asp-controller="Product" class="btn-primary btn form-control ">Back to List</a>
 </div>
 <div class="col-5">
-<input type="submit" value="Create" class="btn btn-success form-control" />
+<input type="submit" value="Update" class="btn btn-success form-control" />
 </div>
 </div>
 </div>

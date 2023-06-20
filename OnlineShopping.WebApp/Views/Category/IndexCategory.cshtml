@@ -14,16 +14,14 @@
 		<thead>
 			<tr>
 				<th>
-					Name
+					Category Name
 				</th>
-				
 				<th></th>
 			</tr>
 		</thead>
 		<tbody>
 			@foreach(var item in Model){
 				<tr>
-					<td>@item.CategoryId</td>
 					<td>@item.CategoryName</td>
 					<td>
 						<a asp-controller="Category" asp-action="UpdateCategory" asp-route-categoryId="@item.CategoryId" class="btn btn-success"><i class="bi bi-pencil-square"></i></a>
