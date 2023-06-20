@@ -31,7 +31,7 @@ namespace OnlineShopping.WebApi.Controllers
             try
             {
 
-                IEnumerable<Product> productList = await _dbProduct.GetAllAsync();
+                IEnumerable<Product> productList = await _dbProduct.GetAllAsync(includeProperties:"Category");
                 _response.Result = _mapper.Map<List<ProductDto>>(productList);
                 _response.StatusCode = HttpStatusCode.OK;
                 return Ok(_response);
@@ -59,7 +59,7 @@ namespace OnlineShopping.WebApi.Controllers
                     _response.StatusCode = HttpStatusCode.BadRequest;
                     return BadRequest(_response);
                 }
-                var product = await _dbProduct.GetAsync(u => u.ProductId == id);
+                var product = await _dbProduct.GetAsync(u => u.ProductId == id, includeProperties: "Category");
 
                 if (product == null)
                 {
