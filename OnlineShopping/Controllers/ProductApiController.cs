@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineShopping.WebApi.Data;
 using OnlineShopping.WebApi.Models;
 using OnlineShopping.WebApi.Repository.IRepository;
+using System.Data;
 using System.Net;
 
 namespace OnlineShopping.WebApi.Controllers
@@ -83,7 +85,6 @@ namespace OnlineShopping.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-
         public async Task<ActionResult<APIResponse>> CreateProduct([FromBody] CreateProductDto createDto)
         {
             try

@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineShopping.WebApi.Data;
 using OnlineShopping.WebApi.Models;
 using OnlineShopping.WebApi.Repository.IRepository;
+using System.Data;
 using System.Net;
 
 namespace OnlineShopping.WebApi.Controllers
@@ -24,6 +26,7 @@ namespace OnlineShopping.WebApi.Controllers
         }
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<APIResponse>> GetCategories()
         {
             try
@@ -48,6 +51,7 @@ namespace OnlineShopping.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         //[ProducesResponseType(200, Type =typeof(VillaDTO))]
+        [Authorize(Roles= "admin")]
         public async Task<ActionResult<APIResponse>> GetCategory(int id)
         {
             try
@@ -81,7 +85,7 @@ namespace OnlineShopping.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<APIResponse>> CreateCategory([FromBody] CategoryDto createDto)
         {
             try
@@ -117,6 +121,7 @@ namespace OnlineShopping.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("{id:int}", Name = "DeleteCategory")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<APIResponse>> DeleteCategory(int id)
         {
             try
@@ -145,6 +150,7 @@ namespace OnlineShopping.WebApi.Controllers
         [HttpPut("{id:int}", Name = "UpdateCategory")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<APIResponse>> UpdateCategory(int id, [FromBody] CategoryDto updateDto)
         {
             try

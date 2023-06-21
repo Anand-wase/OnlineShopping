@@ -17,7 +17,7 @@ public partial class ApplicationDbContext : DbContext
     }
 
     public virtual DbSet<Category> Categories { get; set; }
-
+    public DbSet<LocalUser> LocalUsers { get; set; }
     public virtual DbSet<Product> Products { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
