@@ -9,7 +9,7 @@
         </div>
         <div class="row">
             <div class="col-6 offset-3 pb-2">
-                <input asp-for="UserName" type="text" class="form-control" placeholder="Username..." />
+                <input asp-for="Email" type="Email" class="form-control" placeholder="Email..." />
             </div>
             <div class="col-6 offset-3 pb-2">
                 <input asp-for="Name" type="text" class="form-control" placeholder="Name..." />
@@ -25,6 +25,9 @@
                 <option value="Buyer">Buyer</option>
                 <option value="Admin">Admin</option>
                 </select>
+            </div>
+            <div class="col-6 offset-3 pb-2">
+                <input asp-for="PhoneNumber" type="text" class="form-control" placeholder="PhoneNumber..." />
             </div>
             <div class="col-6 offset-3 pb-2">
                 <button type="submit" class="form-control btn-success" value="Submit">Register</button>
