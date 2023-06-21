@@ -1,6 +1,6 @@
-﻿namespace OnlineShopping.WebApi.Models
+﻿namespace OnlineShopping.WebApp.Models.Dto
 {
-    public class LocalUser
+    public class UserDTO
     {
         public int Id { get; set; }
         public string UserName { get; set; }

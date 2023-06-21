@@ -4,10 +4,10 @@ namespace OnlineShopping.WebApp.Services.IServices
 {
     public interface IProductService
     {
-        Task<T> GetAllAsync<T>();
-        Task<T> GetAsync<T>(int id);
-        Task<T> CreateAsync<T>(CreateProductDto dto);
-        Task<T> UpdateAsync<T>(UpdateProductDto dto);
-        Task<T> DeleteAsync<T>(int id);
+        Task<T> GetAllAsync<T>(string token);
+        Task<T> GetAsync<T>(int id, string token);
+        Task<T> CreateAsync<T>(CreateProductDto dto, string token);
+        Task<T> UpdateAsync<T>(UpdateProductDto dto, string token);
+        Task<T> DeleteAsync<T>(int id, string token);
     }
 }

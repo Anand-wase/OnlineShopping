@@ -51,7 +51,6 @@ namespace OnlineShopping.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(200, Type =typeof(VillaDTO))]
         public async Task<ActionResult<APIResponse>> GetProduct(int id)
         {
             try
@@ -85,6 +84,7 @@ namespace OnlineShopping.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<APIResponse>> CreateProduct([FromBody] CreateProductDto createDto)
         {
             try
@@ -125,6 +125,7 @@ namespace OnlineShopping.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("{id:int}", Name = "DeleteProduct")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<APIResponse>> DeleteProduct(int id)
         {
             try
@@ -153,6 +154,7 @@ namespace OnlineShopping.WebApi.Controllers
         [HttpPut("{id:int}", Name = "UpdateProduct")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<APIResponse>> UpdateProduct(int id, [FromBody] UpdateProductDto updateDto)
         {
             try

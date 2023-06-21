@@ -14,50 +14,55 @@ namespace OnlineShopping.WebApp.Services
             productUrl = configuration.GetValue<string>("ServiceUrls:WebAPI");
 
         }
-        public Task<T> CreateAsync<T>(CreateProductDto dto)
+        public Task<T> CreateAsync<T>(CreateProductDto dto, string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.POST,
                 Data = dto,
-                Url = productUrl + "/api/productAPI"
+                Url = productUrl + "/api/productAPI",
+                Token = token
             });
         }
 
-        public Task<T> DeleteAsync<T>(int id)
+        public Task<T> DeleteAsync<T>(int id, string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.DELETE,
-                Url = productUrl + "/api/productAPI/" + id
+                Url = productUrl + "/api/productAPI/" + id,
+                Token = token
             });
         }
 
-        public Task<T> GetAllAsync<T>()
+        public Task<T> GetAllAsync<T>(string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = productUrl + "/api/productAPI"
+                Url = productUrl + "/api/productAPI",
+                Token = token
             });
         }
 
-        public Task<T> GetAsync<T>(int id)
+        public Task<T> GetAsync<T>(int id, string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.GET,
-                Url = productUrl + "/api/productAPI/" + id
+                Url = productUrl + "/api/productAPI/" + id,
+                Token = token
             });
         }
 
-        public Task<T> UpdateAsync<T>(UpdateProductDto dto)
+        public Task<T> UpdateAsync<T>(UpdateProductDto dto, string token)
         {
             return SendAsync<T>(new APIRequest()
             {
                 ApiType = SD.ApiType.PUT,
                 Data = dto,
-                Url = productUrl + "/api/productAPI/" + dto.ProductId
+                Url = productUrl + "/api/productAPI/" + dto.ProductId,
+                Token = token
             });
         }
     }

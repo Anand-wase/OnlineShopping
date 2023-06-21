@@ -1,7 +1,9 @@
 ﻿
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using OnlineShopping.Utility;
 using OnlineShopping.WebApp.Models;
 using OnlineShopping.WebApp.Services;
 using OnlineShopping.WebApp.Services.IServices;
@@ -17,29 +19,32 @@ namespace OnlineShopping.WebApp.Controllers
             _categoryService = categoryService;
             _mapper = mapper;
         }
+        [Authorize(Roles = "Admin")]
 
         public async Task<IActionResult> IndexCategory()
         {
             List<CategoryDto> list = new();
 
-            var response = await _categoryService.GetAllAsync<APIResponse>();
+            var response = await _categoryService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<CategoryDto>>(Convert.ToString(response.Result));
             }
             return View(list);
         }
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateCategory()
         {
             return View();
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateCategory(CategoryDto model)
         {
             List<CategoryDto> list = new();
 
-            var response = await _categoryService.CreateAsync<APIResponse>(model);
+            var response = await _categoryService.CreateAsync<APIResponse>(model, HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 TempData["success"] = "Category created successfully";
@@ -48,9 +53,10 @@ namespace OnlineShopping.WebApp.Controllers
             TempData["error"] = "Error encountered.";
             return View(model);
         }
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateCategory(int categoryId)
         {
-            var response = await _categoryService.GetAsync<APIResponse>(categoryId);
+            var response = await _categoryService.GetAsync<APIResponse>(categoryId, HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 CategoryDto model = JsonConvert.DeserializeObject<CategoryDto>(Convert.ToString((response.Result)));
@@ -61,9 +67,10 @@ namespace OnlineShopping.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateCategory(CategoryDto model)
         {
-            var response = await _categoryService.UpdateAsync<APIResponse>(model);
+            var response = await _categoryService.UpdateAsync<APIResponse>(model, HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 TempData["success"] = "Category updated successfully";
@@ -73,10 +80,11 @@ namespace OnlineShopping.WebApp.Controllers
             TempData["error"] = "Error encountered.";
             return View(model);
         }
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCategory(int categoryId)
 
         {
-            var response = await _categoryService.GetAsync<APIResponse>(categoryId);
+            var response = await _categoryService.GetAsync<APIResponse>(categoryId, HttpContext.Session.GetString(SD.SessionToken));
 
             if (response != null && response.IsSuccess)
 
@@ -91,11 +99,12 @@ namespace OnlineShopping.WebApp.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteCategory(CategoryDto model)
 
         {
 
-            var response = await _categoryService.DeleteAsync<APIResponse>(model.CategoryId);
+            var response = await _categoryService.DeleteAsync<APIResponse>(model.CategoryId, HttpContext.Session.GetString(SD.SessionToken));
 
             if (response != null && response.IsSuccess)
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using OnlineShopping.Utility;
 using OnlineShopping.WebApp.Models;
 using OnlineShopping.WebApp.Services.IServices;
 using System.Diagnostics;
@@ -21,7 +22,7 @@ namespace OnlineShopping.WebApp.Controllers
         {
             List<ProductDto> list = new();
 
-            var response = await _productService.GetAllAsync<APIResponse>();
+            var response = await _productService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<ProductDto>>(Convert.ToString(response.Result));

@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
+using OnlineShopping.Utility;
 using OnlineShopping.WebApp.Models;
 using OnlineShopping.WebApp.Models.VM;
 using OnlineShopping.WebApp.Services;
 using OnlineShopping.WebApp.Services.IServices;
 using System.Collections.Generic;
+using System.Data;
 
 namespace OnlineShopping.WebApp.Controllers
 {
@@ -26,17 +29,18 @@ namespace OnlineShopping.WebApp.Controllers
         {
             List<ProductDto> list = new();
 
-            var response = await _productService.GetAllAsync<APIResponse>();
+            var response = await _productService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 list = JsonConvert.DeserializeObject<List<ProductDto>>(Convert.ToString(response.Result));
             }
             return View(list);
         }
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateProduct()
         {
             ProductCreateVM productVM = new();
-            var response = await _categoryService.GetAllAsync<APIResponse>();
+            var response = await _categoryService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken)) ;
             if (response != null && response.IsSuccess)
             {
                     productVM.CategoryList = JsonConvert.DeserializeObject<List<CategoryDto>>
@@ -50,11 +54,12 @@ namespace OnlineShopping.WebApp.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateProduct(ProductCreateVM model)
         {
 
 
-            var response = await _productService.CreateAsync<APIResponse>(model.Product);
+            var response = await _productService.CreateAsync<APIResponse>(model.Product, HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 TempData["success"] = "Product created successfully";
@@ -67,7 +72,7 @@ namespace OnlineShopping.WebApp.Controllers
                     ModelState.AddModelError("ErrorMessages", response.ErrorMessages.FirstOrDefault());
                 }
             }
-            var resp = await _categoryService.GetAllAsync<APIResponse>();
+            var resp = await _categoryService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             if (resp != null && resp.IsSuccess)
             {
                 model.CategoryList = JsonConvert.DeserializeObject<List<CategoryDto>>
@@ -80,16 +85,17 @@ namespace OnlineShopping.WebApp.Controllers
             TempData["error"] = "Error encountered.";
             return View(model);
         }
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateProduct(int productId)
         {
             ProductUpdateVM productVM = new();
-            var response = await _productService.GetAsync<APIResponse>(productId);
+            var response = await _productService.GetAsync<APIResponse>(productId, HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 ProductDto model = JsonConvert.DeserializeObject<ProductDto>(Convert.ToString((response.Result)));
                 productVM.Product = _mapper.Map<UpdateProductDto>(model);
             }
-            response = await _categoryService.GetAllAsync<APIResponse>();
+            response = await _categoryService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 productVM.CategoryList = JsonConvert.DeserializeObject<List<CategoryDto>>
@@ -104,11 +110,12 @@ namespace OnlineShopping.WebApp.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateProduct(ProductUpdateVM model)
         {
             if (ModelState.IsValid)
             {
-                var response = await _productService.UpdateAsync<APIResponse>(model.Product);
+                var response = await _productService.UpdateAsync<APIResponse>(model.Product,HttpContext.Session.GetString(SD.SessionToken));
                 if (response != null && response.IsSuccess)
                 {
                     TempData["success"] = "Product updated successfully";
@@ -122,7 +129,7 @@ namespace OnlineShopping.WebApp.Controllers
                     }
                 }
             }
-            var resp = await _categoryService.GetAllAsync<APIResponse>();
+            var resp = await _categoryService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             if (resp != null && resp.IsSuccess)
             {
                 model.CategoryList = JsonConvert.DeserializeObject<List<CategoryDto>>
@@ -135,17 +142,18 @@ namespace OnlineShopping.WebApp.Controllers
             TempData["error"] = "Error encountered.";
             return View(model);
         }
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProduct(int productId)
 
         {
             ProductDeleteVM productVM = new();
-            var response = await _productService.GetAsync<APIResponse>(productId);
+            var response = await _productService.GetAsync<APIResponse>(productId, HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 ProductDto model = JsonConvert.DeserializeObject<ProductDto>(Convert.ToString((response.Result)));
                 productVM.Product = model;
             }
-            response = await _categoryService.GetAllAsync<APIResponse>();
+            response = await _categoryService.GetAllAsync<APIResponse>(HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 productVM.CategoryList = JsonConvert.DeserializeObject<List<CategoryDto>>
@@ -161,9 +169,10 @@ namespace OnlineShopping.WebApp.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteProduct(ProductDeleteVM model)
         {
-            var response = await _productService.DeleteAsync<APIResponse>(model.Product.ProductId);
+            var response = await _productService.DeleteAsync<APIResponse>(model.Product.ProductId, HttpContext.Session.GetString(SD.SessionToken));
             if (response != null && response.IsSuccess)
             {
                 TempData["success"] = "Product delete successfully";
